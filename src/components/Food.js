@@ -16,12 +16,12 @@ const StyledH3 = styled.h3`
   margin: 0;
   padding: 3px 6px;
   background-color: ${(prop) =>
-          prop.variante === true ? "#61dafb" : "burlywood"};
+          prop.variante === true ? "#00aaff" : "burlywood"};
   border-radius: 6px;
   min-width: 80px;
   border-style: solid;
   border-width: 2px;
-  border-color: ${(prop) => (prop.variante === true ? "#61dafb" : "burlywood")};
+  border-color: ${(prop) => (prop.variante === true ? "#00aaff" : "burlywood")};
   cursor: pointer;
 
   :hover {

@@ -16,8 +16,9 @@ function getFromLocalStorage(key) {
 
 function App() {
   const langStrings = {
+    AppText: {de: "Meine Einkaufsliste", en: "My Shopping List"},
     SpracheText: {de: "Sprache", en: "Language"},
-    SucheText: {de: "Suche nach Lebensmitteln", en: "Search for foods"},
+    SucheText: {de: "Suche", en: "Search"},
     WarenkText: {de: "Warenkorb", en: "Shopping cart"},
     ZuletztText: {de: "Zuletzt gekauft", en: "Recently used"},
   };
@@ -36,7 +37,7 @@ function App() {
       fetch("https://fetch-me.vercel.app/api/shopping/items")
         .then((response) => response.json())
         .then((response) =>
-          setFoods(response.data.map((item) => ({...item, active: false})))
+          setFoods(response.data.map((item) => ({...item, active: false, recent: false})))
         );
     }
   }, []);
@@ -51,7 +52,7 @@ function App() {
     setSearchString(e.target.value);
   }
 
-  function toggleSelect(e) {
+  function handleToggle(e) {
     console.log("toggleSelect: " + e.target.id);
 
     setFoods(foods.map((food) => {
@@ -59,6 +60,7 @@ function App() {
         return {
           ...food,
           active: !food.active,
+          recent: true,
         };
       } else {
         return food;
@@ -75,50 +77,58 @@ function App() {
   return (
     <MainContainer>
       <LanguageDiv>
-deutsch
-      <label className="switch">
-        <input
-          type="checkbox"
-          value="en"
-          checked={checked}
-          onChange={handleChangeLang}
-        />
-        <span className="slider round"></span>
-      </label>
-      english
+        deutsch
+        <label className="switch">
+          <input
+            type="checkbox"
+            value="en"
+            checked={checked}
+            onChange={handleChangeLang}
+          />
+          <span className="slider round"></span>
+        </label>
+        english
       </LanguageDiv>
-      <br/>
-      <br/>
-      <br/>
+
+      <h1>{checked ? langStrings.AppText.en : langStrings.AppText.de}</h1>
 
       <label>
         {checked ? langStrings.WarenkText.en : langStrings.WarenkText.de}:
       </label>
+
       <section className="cart">
         {foods.filter((item) => item.active).map((e) => (
           <Food
             key={e._id}
             id={e._id}
             name={checked ? e.name.en : e.name.de}
-            onSelect={toggleSelect}
+            onSelect={handleToggle}
             active={e.active}
           ></Food>
         ))}
       </section>
 
-      <label>{checked ? langStrings.SucheText.en : langStrings.SucheText.de}:</label>
-      <br/>
       <input
         className="search"
         id="searchInput"
         onChange={handleChangeSearch}
         type="text"
         ref={searchInput}
+        placeholder={checked ? langStrings.SucheText.en : langStrings.SucheText.de}
       ></input>
 
       <Collapse>
         <summary>{checked ? langStrings.ZuletztText.en : langStrings.ZuletztText.de}</summary>
-        <p>bli bla blub</p>
+        <section className="recent">
+          {foods.filter((item) => item.recent).map((e) => (
+            <Food
+              key={e._id}
+              id={e._id}
+              name={checked ? e.name.en : e.name.de}
+              active={e.active}
+            ></Food>
+          ))}
+        </section>
       </Collapse>
 
       <section className="shop">
@@ -129,7 +139,7 @@ deutsch
             key={e._id}
             id={e._id}
             name={checked ? e.name.en : e.name.de}
-            onSelect={toggleSelect}
+            onSelect={handleToggle}
             active={e.active}
           ></Food>
         ))}
@@ -141,37 +151,44 @@ deutsch
 const MainContainer = styled.main`
   text-align: center;
   font-size: 18px;
+  padding: 3px 5px;
+
+  h1 {
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 20px;
+  }
 
   .cart,
-  .shop {
-    width: 94%;
-    margin: 10px auto;
+  .shop,
+  .recent {
     display: flex;
     justify-content: flex-start;
     align-items: flex-start;
     gap: 10px;
     flex-direction: row;
     flex-wrap: wrap;
-    min-height: 90px;
-    border: rgba(128, 128, 128, 0.5) 1px solid;
+    min-height: 80px;
     padding: 5px;
+    margin-bottom: 10px;
   }
 
   input[type="text"] {
     font-family: Verdana, Geneva, Tahoma, sans-serif;
     font-size: 18px;
-    width: 30%;
-    color: blue;
-    margin: 10px;
+    width: 50%;
+    color: #155e99;
+    margin-bottom: 10px;
     border-radius: 8px;
-    border: 3px solid black;
+    border: 3px solid #2196f3;
     padding: 3px;
   }
+
   input[type="text"]:hover {
-    border: 3px solid blue;
+    border: 3px solid #155e99;
   }
+
   input[type="text"]:focus {
-    border: 3px solid blue;
+    border: 3px solid #155e99;
     outline: none;
   }
 
@@ -180,14 +197,16 @@ const MainContainer = styled.main`
   .switch {
     position: relative;
     display: inline-block;
-    width: 60px;
-    height: 34px;
+    width: 46px;
+    height: 23px;
   }
+
   .switch input {
     opacity: 0;
     width: 0;
     height: 0;
   }
+
   .slider {
     position: absolute;
     cursor: pointer;
@@ -197,27 +216,31 @@ const MainContainer = styled.main`
     bottom: 0;
     background-color: #2196f3;
     transition: 0.2s;
-    border-radius: 34px;
+    border-radius: 22px;
   }
+
   .slider:before {
     position: absolute;
     content: "";
-    height: 26px;
-    width: 26px;
+    height: 16px;
+    width: 16px;
     left: 4px;
     bottom: 4px;
     background-color: white;
     transition: 0.2s;
     border-radius: 50%;
   }
+
   input:checked + .slider {
     background-color: #2196f3;
   }
+
   input:focus + .slider {
     box-shadow: 0 0 1px #2196f3;
   }
+
   input:checked + .slider:before {
-    transform: translateX(26px);
+    transform: translateX(22px);
   }
 `
 
@@ -230,7 +253,8 @@ const LanguageDiv = styled.div`
   gap: 10px;
 `
 const Collapse = styled.details`
-    text-align: left;
+  text-align: left;
+  margin-left: 5px;
 `
 
 export default App;
