@@ -16,11 +16,11 @@ function getFromLocalStorage(key) {
 
 function App() {
   const langStrings = {
-    AppText: {de: "Meine Einkaufsliste", en: "My Shopping List"},
-    SpracheText: {de: "Sprache", en: "Language"},
-    SucheText: {de: "Suche", en: "Search"},
-    WarenkText: {de: "Warenkorb", en: "Shopping cart"},
-    ZuletztText: {de: "Zuletzt gekauft", en: "Recently used"},
+    AppName: {de: "Meine Einkaufsliste", en: "My Shopping List"},
+    Suche: {de: "Suche", en: "Search"},
+    Zuletzt: {de: "Zuletzt gekauft", en: "Recently used"},
+    Obst: {de: "Obst & Gemüse", en: "Fruits & Vegetables"},
+    Brot: {de: "Brot & Gebäck", en: "Bread & Pastries"},
   };
 
   const [searchString, setSearchString] = useState("");
@@ -66,6 +66,8 @@ function App() {
         return food;
       }
     }));
+
+    setSearchString("");
   }
 
   function handleChangeLang(e) {
@@ -90,35 +92,50 @@ function App() {
         english
       </LanguageDiv>
 
-      <h1>{checked ? langStrings.AppText.en : langStrings.AppText.de}</h1>
+      <h1>{checked ? langStrings.AppName.en : langStrings.AppName.de}</h1>
 
-      <label>
-        {checked ? langStrings.WarenkText.en : langStrings.WarenkText.de}:
-      </label>
+      <Collapse open>
+        <summary>{checked ? langStrings.Obst.en : langStrings.Obst.de}</summary>
+        <section className="cart">
+          {foods.filter((item) => item.active && item.category._ref === "c2hvcHBpbmcuY2F0ZWdvcnk6MA==").map((e) => (
+            <Food
+              key={e._id}
+              id={e._id}
+              name={checked ? e.name.en : e.name.de}
+              onSelect={handleToggle}
+              active={e.active}
+            ></Food>
+          ))}
+        </section>
+      </Collapse>
 
-      <section className="cart">
-        {foods.filter((item) => item.active).map((e) => (
-          <Food
-            key={e._id}
-            id={e._id}
-            name={checked ? e.name.en : e.name.de}
-            onSelect={handleToggle}
-            active={e.active}
-          ></Food>
-        ))}
-      </section>
+      <Collapse open>
+        <summary>{checked ? langStrings.Brot.en : langStrings.Brot.de}</summary>
+        <section className="cart">
+          {foods.filter((item) => item.active && item.category._ref === "c2hvcHBpbmcuY2F0ZWdvcnk6MQ==").map((e) => (
+            <Food
+              key={e._id}
+              id={e._id}
+              name={checked ? e.name.en : e.name.de}
+              onSelect={handleToggle}
+              active={e.active}
+            ></Food>
+          ))}
+        </section>
+      </Collapse>
 
       <input
         className="search"
         id="searchInput"
         onChange={handleChangeSearch}
+        value={searchString}
         type="text"
         ref={searchInput}
-        placeholder={checked ? langStrings.SucheText.en : langStrings.SucheText.de}
+        placeholder={checked ? langStrings.Suche.en : langStrings.Suche.de}
       ></input>
 
-      <Collapse>
-        <summary>{checked ? langStrings.ZuletztText.en : langStrings.ZuletztText.de}</summary>
+      {(searchString === "") && <Collapse>
+        <summary>{checked ? langStrings.Zuletzt.en : langStrings.Zuletzt.de}</summary>
         <section className="recent">
           {foods.filter((item) => item.recent).map((e) => (
             <Food
@@ -129,7 +146,7 @@ function App() {
             ></Food>
           ))}
         </section>
-      </Collapse>
+      </Collapse>}
 
       <section className="shop">
         {search(searchString, foods, {
