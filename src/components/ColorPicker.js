@@ -2,39 +2,30 @@ import styled from "styled-components";
 import {RalColorsLimited} from "../data/RalColors";
 import {useState} from "react";
 
-export default function MyColorPicker({setColor1}) {
-  const [color, setColor] = useState({
-    ral: "1001",
-    rgb: "194-176-120",
-    id: "#C2B078",
-    name: "Beige",
-    en: "Beige",
-  });
-  const [show, setShow] = useState(true);
+export default function MyColorPicker({setColorOut, defaultColor, langEn}) {
+  const [color, setColor] = useState(defaultColor);
+  const [show, setShow] = useState(false);
 
   function handleClickSelect(e, color) {
     setColor(color);
     setShow(false);
-
-    setColor1(color.id)
+    console.log(color.id);
+    setColorOut(color.id)
   }
 
-  function handleClick(e, color) {
+  function handleClick() {
     setShow(true);
   }
 
   return (
     <Container>
-      {show || <StyledInput
-        className="search"
-        id="color"
-        value={color.name}
-        style={{backgroundColor: color.id}}
-        readOnly={true}
-        type="text"
-        placeholder="Color" onClick={handleClick}
+      <ColorItemOnce
+        key={color.id}
+        onClick={handleClick}
       >
-      </StyledInput>}
+        <Color style={{backgroundColor: color.id}}/>
+        <ColorText>{langEn ? color.en : color.name}</ColorText>
+      </ColorItemOnce>
 
       {!show || <ColorList>
         {RalColorsLimited.map((color) => (
@@ -45,7 +36,7 @@ export default function MyColorPicker({setColor1}) {
             }}
           >
             <Color style={{backgroundColor: color.id}}/>
-            <ColorText>{color.name}</ColorText>
+            <ColorText>{langEn ? color.en : color.name}</ColorText>
           </ColorItem>
         ))}
       </ColorList>}
@@ -60,7 +51,6 @@ const Container = styled.div`
   align-items: center;
   justify-content: center;
   text-align: center;
-  width: 200px;
 `;
 
 const ColorList = styled.div`
@@ -70,10 +60,11 @@ const ColorList = styled.div`
   align-items: center;
   justify-content: flex-start;
   text-align: center;
-  width: 100%;
+  width: 192px;
   height: 180px;
-  border: 1px solid black;
-  overflow-y: scroll;
+  border: 2px solid gray;
+  border-top: 1px solid gray;
+  overflow-y: auto;
   overflow-x: hidden;
 `;
 
@@ -85,7 +76,22 @@ const ColorItem = styled.div`
   justify-content: flex-start;
   text-align: center;
   width: 96%;
-  border-bottom: 1px solid black;
+  border-bottom: 1px solid gray;
+  padding: 4px;
+  cursor: pointer;
+  background-color: white;
+`;
+
+const ColorItemOnce = styled.div`
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: flex-start;
+  text-align: center;
+  width: 200px;
+  border: 2px solid gray;
+  border-radius: 8px;
   padding: 4px;
   cursor: pointer;
   background-color: white;
@@ -102,23 +108,3 @@ const ColorText = styled.div`
   font-size: 1em;
   margin-left: 8px;
 `;
-
-const StyledInput = styled.input`
-  font-family: Verdana, Geneva, Tahoma, sans-serif;
-  font-size: 18px;
-  width: 100%;
-  color: #155e99;
-  margin-bottom: 10px;
-  border-radius: 8px;
-  border: 3px solid #2196f3;
-  padding: 3px;
-
-  &:hover {
-    border: 3px solid #155e99;
-  }
-
-  &:focus {
-    border: 3px solid #155e99;
-    outline: none;
-  }
-`

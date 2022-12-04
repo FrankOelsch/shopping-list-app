@@ -22,6 +22,9 @@ function App() {
     Zuletzt: {de: "Zuletzt gekauft", en: "Recently used"},
     Obst: {de: "Obst & Gemüse", en: "Fruits & Vegetables"},
     Brot: {de: "Brot & Gebäck", en: "Bread & Pastries"},
+    Farbe1: {de: "Einkaufsliste", en: "Shopping List"},
+    Farbe2: {de: "Zuletzt Gekauft", en: "Recent Used"},
+    Farbe3: {de: "Such-Ergebnisse", en: "Search Results"},
   };
 
   const [searchString, setSearchString] = useState("");
@@ -29,7 +32,9 @@ function App() {
   const [foods, setFoods] = useState(getFromLocalStorage("Foods") ?? []);
   const searchInput = useRef(null);
 
-  const [color1, setColor1] = useState("#C2B078");
+  const [colorCart, setColorCart] = useState("#BDECB6");
+  const [colorRecent, setColorRecent] = useState("#E6D690");
+  const [colorResults, setColorResults] = useState("#E6D690");
 
   // searchInput.current.focus();
 
@@ -107,6 +112,7 @@ function App() {
               name={checked ? e.name.en : e.name.de}
               onSelect={handleToggle}
               active={e.active}
+              color={colorCart}
             ></Food>
           ))}
         </section>
@@ -122,6 +128,7 @@ function App() {
               name={checked ? e.name.en : e.name.de}
               onSelect={handleToggle}
               active={e.active}
+              color={colorCart}
             ></Food>
           ))}
         </section>
@@ -137,7 +144,7 @@ function App() {
         placeholder={checked ? langStrings.Suche.en : langStrings.Suche.de}
       ></StyledInput>
 
-      {(searchString === "") && <Collapse>
+      {(searchString === "") && <Collapse open>
         <summary>{checked ? langStrings.Zuletzt.en : langStrings.Zuletzt.de}</summary>
         <section className="recent">
           {foods.filter((item) => item.recent).map((e) => (
@@ -147,6 +154,7 @@ function App() {
               name={checked ? e.name.en : e.name.de}
               onSelect={handleToggle}
               active={e.active}
+              color={colorRecent}
             ></Food>
           ))}
         </section>
@@ -163,24 +171,52 @@ function App() {
             name={checked ? e.name.en : e.name.de}
             onSelect={handleToggle}
             active={e.active}
+            color={colorResults}
           ></Food>
         ))}
       </section>
 
-      <h1>Test Color-Picker</h1>
+      <h1>Test ColorPicker</h1>
 
-      <StyledInput
-        id="color1"
-        style={{ backgroundColor: color1 }}
-        readOnly={true}
-        type="text"
-      ></StyledInput>
-
+      <label htmlFor="colpick1">
+        {checked ? langStrings.Farbe1.en : langStrings.Farbe1.de}
+      </label>
       <MyColorPicker
-        setColor1={setColor1}
-      >
-
-      </MyColorPicker>
+        id="colpick1"
+        langEn={checked}
+        setColorOut={setColorCart}
+        defaultColor={{ral: "6019",
+          rgb: "189-236-182",
+          id: "#BDECB6",
+          name: "Weißgrün",
+          en: "Pastel green",}}
+      ></MyColorPicker>
+      <label htmlFor="colpick2">
+        {checked ? langStrings.Farbe2.en : langStrings.Farbe2.de}
+      </label>
+      <MyColorPicker
+        id="colpick2"
+        langEn={checked}
+        setColorOut={setColorRecent}
+        defaultColor={{ral: "1015",
+          rgb: "230-214-144",
+          id: "#E6D690",
+          name: "Hellelfenbein",
+          en: "Light ivory",}}
+      ></MyColorPicker>
+      <label htmlFor="colpick3">
+        {checked ? langStrings.Farbe3.en : langStrings.Farbe3.de}
+      </label>
+      <MyColorPicker
+        id="colpick3"
+        langEn={checked}
+        setColorOut={setColorResults}
+        defaultColor={{ral: "7035",
+          rgb: "203-208-204",
+          id: "#CBD0CC",
+          name: "Lichtgrau",
+          en: "Light grey",}}
+      ></MyColorPicker>
 
     </MainContainer>
   );
