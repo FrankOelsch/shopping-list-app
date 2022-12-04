@@ -1,6 +1,7 @@
 import {useEffect, useState, useRef} from "react";
 import Food from "./components/Food";
 import styled from "styled-components";
+import MyColorPicker from "./components/ColorPicker";
 
 function setToLocalStorage(key, value) {
   localStorage.setItem(key, JSON.stringify(value));
@@ -27,6 +28,8 @@ function App() {
   const [checked, setChecked] = useState(false);
   const [foods, setFoods] = useState(getFromLocalStorage("Foods") ?? []);
   const searchInput = useRef(null);
+
+  const [color1, setColor1] = useState("#C2B078");
 
   // searchInput.current.focus();
 
@@ -124,7 +127,7 @@ function App() {
         </section>
       </Collapse>
 
-      <input
+      <StyledInput
         className="search"
         id="searchInput"
         onChange={handleChangeSearch}
@@ -132,7 +135,7 @@ function App() {
         type="text"
         ref={searchInput}
         placeholder={checked ? langStrings.Suche.en : langStrings.Suche.de}
-      ></input>
+      ></StyledInput>
 
       {(searchString === "") && <Collapse>
         <summary>{checked ? langStrings.Zuletzt.en : langStrings.Zuletzt.de}</summary>
@@ -142,6 +145,7 @@ function App() {
               key={e._id}
               id={e._id}
               name={checked ? e.name.en : e.name.de}
+              onSelect={handleToggle}
               active={e.active}
             ></Food>
           ))}
@@ -151,6 +155,7 @@ function App() {
       <section className="shop">
         {search(searchString, foods, {
           keySelector: (obj) => (checked ? obj.name.en : obj.name.de),
+          threshold: .6,
         }).filter((item) => !item.active).map((e) => (
           <Food
             key={e._id}
@@ -161,6 +166,22 @@ function App() {
           ></Food>
         ))}
       </section>
+
+      <h1>Test Color-Picker</h1>
+
+      <StyledInput
+        id="color1"
+        style={{ backgroundColor: color1 }}
+        readOnly={true}
+        type="text"
+      ></StyledInput>
+
+      <MyColorPicker
+        setColor1={setColor1}
+      >
+
+      </MyColorPicker>
+
     </MainContainer>
   );
 }
@@ -169,6 +190,11 @@ const MainContainer = styled.main`
   text-align: center;
   font-size: 18px;
   padding: 3px 5px;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: center;
 
   h1 {
     font-family: Verdana, Geneva, Tahoma, sans-serif;
@@ -184,29 +210,9 @@ const MainContainer = styled.main`
     gap: 10px;
     flex-direction: row;
     flex-wrap: wrap;
-    min-height: 80px;
+    min-height: 40px;
     padding: 5px;
     margin-bottom: 10px;
-  }
-
-  input[type="text"] {
-    font-family: Verdana, Geneva, Tahoma, sans-serif;
-    font-size: 18px;
-    width: 50%;
-    color: #155e99;
-    margin-bottom: 10px;
-    border-radius: 8px;
-    border: 3px solid #2196f3;
-    padding: 3px;
-  }
-
-  input[type="text"]:hover {
-    border: 3px solid #155e99;
-  }
-
-  input[type="text"]:focus {
-    border: 3px solid #155e99;
-    outline: none;
   }
 
 
@@ -270,8 +276,29 @@ const LanguageDiv = styled.div`
   gap: 10px;
 `
 const Collapse = styled.details`
+  align-self: flex-start;
   text-align: left;
   margin-left: 5px;
+`
+
+const StyledInput = styled.input`
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 18px;
+    width: 50%;
+    color: #155e99;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    border: 3px solid #2196f3;
+    padding: 3px;
+
+  &:hover {
+    border: 3px solid #155e99;
+  }
+
+  &:focus {
+    border: 3px solid #155e99;
+    outline: none;
+  }
 `
 
 export default App;
