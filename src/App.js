@@ -2,6 +2,7 @@ import {useEffect, useState, useRef} from "react";
 import Food from "./components/Food";
 import styled from "styled-components";
 import MyColorPicker from "./components/ColorPicker";
+import {RalColorsLimited} from "./data/RalColors";
 
 function setToLocalStorage(key, value) {
   localStorage.setItem(key, JSON.stringify(value));
@@ -182,6 +183,7 @@ function App() {
       <MyColorPicker
         id="colpick1"
         langEn={checked}
+        colors={RalColorsLimited}
         setColorOut={setColorCart}
         defaultColor={{ral: "6019",
           rgb: "189-236-182",
@@ -195,6 +197,7 @@ function App() {
       <MyColorPicker
         id="colpick2"
         langEn={checked}
+        colors={RalColorsLimited}
         setColorOut={setColorRecent}
         defaultColor={{ral: "1015",
           rgb: "230-214-144",
@@ -208,6 +211,7 @@ function App() {
       <MyColorPicker
         id="colpick3"
         langEn={checked}
+        colors={RalColorsLimited}
         setColorOut={setColorResults}
         defaultColor={{ral: "7035",
           rgb: "203-208-204",
@@ -251,11 +255,12 @@ const MainContainer = styled.main`
   }
 
   /* switch */
+
   .switch {
     position: relative;
     display: inline-block;
     width: 46px;
-    height: 23px;
+    height: 22px;
   }
 
   .switch input {
@@ -271,7 +276,7 @@ const MainContainer = styled.main`
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: #2196f3;
+    background-color: burlywood;
     transition: 0.2s;
     border-radius: 22px;
   }
@@ -282,14 +287,14 @@ const MainContainer = styled.main`
     height: 16px;
     width: 16px;
     left: 4px;
-    bottom: 4px;
-    background-color: white;
+    bottom: 3px;
+    background-color: #242424;
     transition: 0.2s;
     border-radius: 50%;
   }
 
   input:checked + .slider {
-    background-color: #2196f3;
+    background-color: burlywood;
   }
 
   input:focus + .slider {

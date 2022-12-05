@@ -38,11 +38,4 @@ const StyledH3 = styled.h3`
   border-style: solid;
   border-width: 1px;
   cursor: pointer;
-    /*
-  background-color: ${(prop) =>
-          prop.variante === true ? "#00aaff" : "burlywood"};
-*/
-    /*
-  border-color: ${(prop) => (prop.variante === true ? "#00aaff" : "burlywood")};
-*/
 `;

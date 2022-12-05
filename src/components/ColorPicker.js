@@ -1,8 +1,7 @@
 import styled from "styled-components";
-import {RalColorsLimited} from "../data/RalColors";
 import {useState} from "react";
 
-export default function MyColorPicker({setColorOut, defaultColor, langEn}) {
+export default function MyColorPicker({colors, setColorOut, defaultColor, langEn}) {
   const [color, setColor] = useState(defaultColor);
   const [show, setShow] = useState(false);
 
@@ -28,7 +27,7 @@ export default function MyColorPicker({setColorOut, defaultColor, langEn}) {
       </ColorItemOnce>
 
       {!show || <ColorList>
-        {RalColorsLimited.map((color) => (
+        {colors.map((color) => (
           <ColorItem
             key={color.id}
             onClick={(e) => {
@@ -54,22 +53,25 @@ const Container = styled.div`
   color: black;
 `;
 
-const ColorList = styled.div`
+const ColorList = styled.ul`
   display: flex;
   flex-direction: column;
   flex-wrap: nowrap;
   align-items: center;
   justify-content: flex-start;
   text-align: center;
-  width: 192px;
+  width: 194px;
   height: 180px;
   border: 2px solid gray;
   border-top: 1px solid gray;
   overflow-y: auto;
   overflow-x: hidden;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
 `;
 
-const ColorItem = styled.div`
+const ColorItem = styled.li`
   font-family: Arial, Helvetica, sans-serif;
   font-size: 16px;
   display: flex;
