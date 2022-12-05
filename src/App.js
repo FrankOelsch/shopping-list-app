@@ -34,14 +34,12 @@ function App() {
 
   const [colorCart, setColorCart] = useState("#BDECB6");
   const [colorRecent, setColorRecent] = useState("#E6D690");
-  const [colorResults, setColorResults] = useState("#E6D690");
+  const [colorResults, setColorResults] = useState("#CBD0CC");
 
   // searchInput.current.focus();
 
   useEffect(() => {
-    if (foods && foods.length > 0) {
-      return;
-    } else {
+    if (!foods || foods.length < 1) {
       fetch("https://fetch-me.vercel.app/api/shopping/items")
         .then((response) => response.json())
         .then((response) =>
@@ -78,7 +76,7 @@ function App() {
     setSearchString("");
   }
 
-  function handleChangeLang(e) {
+  function handleChangeLang() {
     setChecked(!checked);
   }
 
@@ -104,7 +102,7 @@ function App() {
 
       <Collapse open>
         <summary>{checked ? langStrings.Obst.en : langStrings.Obst.de}</summary>
-        <section className="cart">
+        <section>
           {foods.filter((item) => item.active && item.category._ref === "c2hvcHBpbmcuY2F0ZWdvcnk6MA==").map((e) => (
             <Food
               key={e._id}
@@ -120,7 +118,7 @@ function App() {
 
       <Collapse open>
         <summary>{checked ? langStrings.Brot.en : langStrings.Brot.de}</summary>
-        <section className="cart">
+        <section>
           {foods.filter((item) => item.active && item.category._ref === "c2hvcHBpbmcuY2F0ZWdvcnk6MQ==").map((e) => (
             <Food
               key={e._id}
@@ -146,8 +144,8 @@ function App() {
 
       {(searchString === "") && <Collapse open>
         <summary>{checked ? langStrings.Zuletzt.en : langStrings.Zuletzt.de}</summary>
-        <section className="recent">
-          {foods.filter((item) => item.recent).map((e) => (
+        <section>
+          {foods.filter((item) => item.recent && !item.active).map((e) => (
             <Food
               key={e._id}
               id={e._id}
@@ -160,7 +158,7 @@ function App() {
         </section>
       </Collapse>}
 
-      <section className="shop">
+      <section>
         {search(searchString, foods, {
           keySelector: (obj) => (checked ? obj.name.en : obj.name.de),
           threshold: .6,
@@ -224,33 +222,33 @@ function App() {
 
 const MainContainer = styled.main`
   text-align: center;
-  font-size: 18px;
+  font-size: 16px;
   padding: 3px 5px;
   display: flex;
   flex-direction: column;
   flex-wrap: nowrap;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
+  color: white;
+  background-color: steelblue;
+  height: 99.2vh;
 
   h1 {
     font-family: Verdana, Geneva, Tahoma, sans-serif;
     font-size: 20px;
+    color: white;
   }
 
-  .cart,
-  .shop,
-  .recent {
+  section {
     display: flex;
     justify-content: flex-start;
     align-items: flex-start;
     gap: 10px;
     flex-direction: row;
     flex-wrap: wrap;
-    min-height: 40px;
     padding: 5px;
     margin-bottom: 10px;
   }
-
 
   /* switch */
   .switch {
@@ -324,15 +322,15 @@ const StyledInput = styled.input`
     color: #155e99;
     margin-bottom: 10px;
     border-radius: 8px;
-    border: 3px solid #2196f3;
+    border: 2px solid gray;
     padding: 3px;
 
   &:hover {
-    border: 3px solid #155e99;
+    border: 2px solid #155e99;
   }
 
   &:focus {
-    border: 3px solid #155e99;
+    border: 2px solid #155e99;
     outline: none;
   }
 `

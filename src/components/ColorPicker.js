@@ -51,6 +51,7 @@ const Container = styled.div`
   align-items: center;
   justify-content: center;
   text-align: center;
+  color: black;
 `;
 
 const ColorList = styled.div`
@@ -69,6 +70,8 @@ const ColorList = styled.div`
 `;
 
 const ColorItem = styled.div`
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 16px;
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
@@ -82,7 +85,9 @@ const ColorItem = styled.div`
   background-color: white;
 `;
 
-const ColorItemOnce = styled.div`
+const ColorItemOnce = styled.button`
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 16px;
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
@@ -95,6 +100,15 @@ const ColorItemOnce = styled.div`
   padding: 4px;
   cursor: pointer;
   background-color: white;
+
+  &:hover {
+    border: 2px solid #155e99;
+  }
+
+  &:focus {
+    border: 2px solid #155e99;
+    outline: none;
+  }
 `;
 
 const Color = styled.div`
