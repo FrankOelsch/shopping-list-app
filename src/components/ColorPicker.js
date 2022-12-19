@@ -1,43 +1,59 @@
 import styled from "styled-components";
-import {useState} from "react";
+import {createRef, useEffect, useState} from "react";
 
 export default function MyColorPicker({colors, setColorOut, defaultColor, langEn}) {
-  const [color, setColor] = useState(defaultColor);
+  const [selectedColor, setSelectedColor] = useState(defaultColor);
   const [show, setShow] = useState(false);
+  const ref = createRef();
+
+  useEffect(() => {
+    if (show) {
+      // ref.current.scrollIntoView({
+      //   behavior: 'smooth',
+      //   block: 'start',
+      // });
+      // funktioniert nur bei vorhandenem tabIndex
+      ref.current.focus();
+    }
+  }, [show])
 
   function handleClickSelect(e, color) {
-    setColor(color);
+    setSelectedColor(color);
     setShow(false);
     console.log(color.id);
     setColorOut(color.id)
   }
 
   function handleClick() {
-    setShow(true);
+    setShow(!show);
   }
 
   return (
     <Container>
       <ColorItemOnce
-        key={color.id}
+        key={selectedColor.id}
         onClick={handleClick}
       >
-        <Color style={{backgroundColor: color.id}}/>
-        <ColorText>{langEn ? color.en : color.name}</ColorText>
+        <Color style={{backgroundColor: selectedColor.id}}/>
+        <ColorText>{langEn ? selectedColor.en : selectedColor.name}</ColorText>
       </ColorItemOnce>
 
       {!show || <ColorList>
-        {colors.map((color) => (
-          <ColorItem
-            key={color.id}
-            onClick={(e) => {
-              handleClickSelect(e, color);
-            }}
-          >
-            <Color style={{backgroundColor: color.id}}/>
-            <ColorText>{langEn ? color.en : color.name}</ColorText>
-          </ColorItem>
-        ))}
+        {colors.map((color, index) => {
+            return (
+              <ColorItem
+                key={color.id}
+                tabIndex={index}
+                ref={color.id === selectedColor.id ? ref : null}
+                onClick={(e) => {
+                  handleClickSelect(e, color);
+                }}
+              >
+                <Color style={{backgroundColor: color.id}}/>
+                <ColorText>{langEn ? color.en : color.name}</ColorText>
+              </ColorItem>
+            )
+          })}
       </ColorList>}
     </Container>
   );
@@ -85,6 +101,14 @@ const ColorItem = styled.li`
   padding: 4px;
   cursor: pointer;
   background-color: white;
+
+  &:hover {
+    background-color: #d8dfe6;
+  }
+
+  &:focus {
+    background-color: #d8dfe6;
+  }
 `;
 
 const ColorItemOnce = styled.button`
