@@ -8,11 +8,13 @@ export default function MyColorPicker({colors, setColorOut, defaultColor, langEn
 
   useEffect(() => {
     if (show) {
+      // funktioniert, wird aber durch focus() überlagert
       // ref.current.scrollIntoView({
       //   behavior: 'smooth',
       //   block: 'start',
       // });
-      // funktioniert nur bei vorhandenem tabIndex
+
+      // funktioniert nur bei vorhandenem tabIndex:
       ref.current.focus();
     }
   }, [show])
@@ -28,6 +30,24 @@ export default function MyColorPicker({colors, setColorOut, defaultColor, langEn
     setShow(!show);
   }
 
+  function handleBlur(e) {
+    // if (e.currentTarget === e.target) {
+    //   console.log('unfocused self', e.currentTarget, e.target, e.relatedTarget);
+    // } else {
+    //   console.log('unfocused child', e.currentTarget, e.target, e.relatedTarget);
+    // }
+    // if (!e.currentTarget.contains(e.relatedTarget)) {
+    //   // Not triggered when swapping focus between children
+    //   console.log('focus left self', e.currentTarget, e.target, e.relatedTarget);
+    //   //setShow(false);
+    // }
+
+    if (e.relatedTarget === null) {
+      // clicking outside
+      setShow(false);
+    }
+  }
+
   return (
     <Container>
       <ColorItemOnce
@@ -38,22 +58,22 @@ export default function MyColorPicker({colors, setColorOut, defaultColor, langEn
         <ColorText>{langEn ? selectedColor.en : selectedColor.name}</ColorText>
       </ColorItemOnce>
 
-      {!show || <ColorList>
+      {!show || <ColorList tabIndex={1000} onBlur={handleBlur}>
         {colors.map((color, index) => {
-            return (
-              <ColorItem
-                key={color.id}
-                tabIndex={index}
-                ref={color.id === selectedColor.id ? ref : null}
-                onClick={(e) => {
-                  handleClickSelect(e, color);
-                }}
-              >
-                <Color style={{backgroundColor: color.id}}/>
-                <ColorText>{langEn ? color.en : color.name}</ColorText>
-              </ColorItem>
-            )
-          })}
+          return (
+            <ColorItem
+              key={color.id}
+              tabIndex={index}
+              ref={color.id === selectedColor.id ? ref : null}
+              onClick={(e) => {
+                handleClickSelect(e, color);
+              }}
+            >
+              <Color style={{backgroundColor: color.id}}/>
+              <ColorText>{langEn ? color.en : color.name}</ColorText>
+            </ColorItem>
+          )
+        })}
       </ColorList>}
     </Container>
   );

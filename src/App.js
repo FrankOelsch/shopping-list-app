@@ -234,8 +234,11 @@ const MainContainer = styled.main`
   justify-content: flex-start;
   align-items: center;
   color: white;
-  background-color: steelblue;
   height: 99.2vh;
+  max-width: 500px;
+  margin: 0 auto;
+  border-left: rgba(0, 0, 0, 0.4) solid 1px;
+  border-right: rgba(0, 0, 0, 0.4) solid 1px;
 
   h1 {
     font-family: Verdana, Geneva, Tahoma, sans-serif;
