@@ -11,9 +11,21 @@ export default function Food({id, name, onSelect, active, color}) {
   const handleMouseLeave = () => {
     setIsHovering(false);
   };
+  
+  function isDarkColor(clr) {
+    let c = clr.substring(1);      // strip #
+    let rgb = parseInt(c, 16);   // convert rrggbb to decimal
+    let r = (rgb >> 16) & 0xff;  // extract red
+    let g = (rgb >>  8) & 0xff;  // extract green
+    let b = (rgb >>  0) & 0xff;  // extract blue
+    let darkness = 0.2126 * r + 0.7152 * g + 0.0722 * b; // per ITU-R BT.709
+    return darkness < 128;
+  }
 
   return (
-    <StyledH3 style={{backgroundColor: color, borderColor: isHovering ? 'white' : color}}
+    <StyledH3 style={{backgroundColor: color,
+      borderColor: isHovering ? 'white' : color,
+      color: (isDarkColor(color) === true) ? "white" : "black"}}
               variante={active}
               id={id}
               onClick={(e) => onSelect(e)}
@@ -30,6 +42,7 @@ const StyledH3 = styled.h3`
   font-size: 18px;
   font-style: normal;
   font-weight: bold;
+  text-align: center;
   margin: 0;
   padding: 3px 6px;
   color: black;
