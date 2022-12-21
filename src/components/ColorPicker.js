@@ -1,8 +1,8 @@
 import styled from "styled-components";
 import {createRef, useEffect, useState} from "react";
 
-export default function MyColorPicker({colors, setColorOut, defaultColor, langEn}) {
-  const [selectedColor, setSelectedColor] = useState(defaultColor);
+export default function MyColorPicker({colors, onColorSelect, defaultColor, langEn}) {
+  const [selectedColor, setSelectedColor] = useState(colors.find((color) => color.id === defaultColor));
   const [show, setShow] = useState(false);
   const ref = createRef();
 
@@ -22,8 +22,7 @@ export default function MyColorPicker({colors, setColorOut, defaultColor, langEn
   function handleClickSelect(e, color) {
     setSelectedColor(color);
     setShow(false);
-    console.log(color.id);
-    setColorOut(color.id)
+    onColorSelect(color);
   }
 
   function handleClick() {
@@ -31,17 +30,6 @@ export default function MyColorPicker({colors, setColorOut, defaultColor, langEn
   }
 
   function handleBlur(e) {
-    // if (e.currentTarget === e.target) {
-    //   console.log('unfocused self', e.currentTarget, e.target, e.relatedTarget);
-    // } else {
-    //   console.log('unfocused child', e.currentTarget, e.target, e.relatedTarget);
-    // }
-    // if (!e.currentTarget.contains(e.relatedTarget)) {
-    //   // Not triggered when swapping focus between children
-    //   console.log('focus left self', e.currentTarget, e.target, e.relatedTarget);
-    //   //setShow(false);
-    // }
-
     if (e.relatedTarget === null) {
       // clicking outside
       setShow(false);

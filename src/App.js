@@ -33,9 +33,10 @@ function App() {
   const [foods, setFoods] = useState(getFromLocalStorage("Foods") ?? []);
   const searchInput = useRef(null);
 
-  const [colorCart, setColorCart] = useState("#BDECB6");
-  const [colorRecent, setColorRecent] = useState("#E6D690");
-  const [colorResults, setColorResults] = useState("#CBD0CC");
+  const [foodColors, setFoodColors] = useState(getFromLocalStorage("FoodColors") ?? {
+    cart: "#BDECB6",
+    recent: "#E6D690",
+    results: "#CBD0CC"});
 
   // searchInput.current.focus();
 
@@ -44,7 +45,8 @@ function App() {
       fetch("https://fetch-me.vercel.app/api/shopping/items")
         .then((response) => response.json())
         .then((response) =>
-          setFoods(response.data.map((item) => ({...item, active: false, recent: false})))
+          setFoods(response.data.map((item) => ({...item,
+            active: false, recent: false, date: Date.now()})))
         );
     }
   }, []);
@@ -52,6 +54,10 @@ function App() {
   useEffect(() => {
     setToLocalStorage("Foods", foods);
   }, [foods]);
+
+  useEffect(() => {
+    setToLocalStorage("FoodColors", foodColors);
+  }, [foodColors]);
 
   const {search} = require("fast-fuzzy");
 
@@ -68,6 +74,7 @@ function App() {
           ...food,
           active: !food.active,
           recent: true,
+          date: Date.now(),
         };
       } else {
         return food;
@@ -104,14 +111,16 @@ function App() {
       <Collapse open>
         <summary>{checked ? langStrings.Obst.en : langStrings.Obst.de}</summary>
         <section>
-          {foods.filter((item) => item.active && item.category._ref === "c2hvcHBpbmcuY2F0ZWdvcnk6MA==").map((e) => (
+          {foods.filter((item) => item.active && item.category._ref === "c2hvcHBpbmcuY2F0ZWdvcnk6MA==")
+            .sort((a, b) => a.date - b.date)
+            .map((e) => (
             <Food
               key={e._id}
               id={e._id}
               name={checked ? e.name.en : e.name.de}
               onSelect={handleToggle}
               active={e.active}
-              color={colorCart}
+              color={foodColors.cart}
             ></Food>
           ))}
         </section>
@@ -120,14 +129,16 @@ function App() {
       <Collapse open>
         <summary>{checked ? langStrings.Brot.en : langStrings.Brot.de}</summary>
         <section>
-          {foods.filter((item) => item.active && item.category._ref === "c2hvcHBpbmcuY2F0ZWdvcnk6MQ==").map((e) => (
+          {foods.filter((item) => item.active && item.category._ref === "c2hvcHBpbmcuY2F0ZWdvcnk6MQ==")
+            .sort((a, b) => a.date - b.date)
+            .map((e) => (
             <Food
               key={e._id}
               id={e._id}
               name={checked ? e.name.en : e.name.de}
               onSelect={handleToggle}
               active={e.active}
-              color={colorCart}
+              color={foodColors.cart}
             ></Food>
           ))}
         </section>
@@ -146,14 +157,16 @@ function App() {
       {(searchString === "") && <Collapse open>
         <summary>{checked ? langStrings.Zuletzt.en : langStrings.Zuletzt.de}</summary>
         <section>
-          {foods.filter((item) => item.recent && !item.active).map((e) => (
+          {foods.filter((item) => item.recent && !item.active)
+            .sort((a, b) => b.date - a.date)
+            .map((e) => (
             <Food
               key={e._id}
               id={e._id}
               name={checked ? e.name.en : e.name.de}
               onSelect={handleToggle}
               active={e.active}
-              color={colorRecent}
+              color={foodColors.recent}
             ></Food>
           ))}
         </section>
@@ -170,7 +183,7 @@ function App() {
             name={checked ? e.name.en : e.name.de}
             onSelect={handleToggle}
             active={e.active}
-            color={colorResults}
+            color={foodColors.results}
           ></Food>
         ))}
       </section>
@@ -184,12 +197,9 @@ function App() {
         id="colpick1"
         langEn={checked}
         colors={RalColorsLimited}
-        setColorOut={setColorCart}
-        defaultColor={{ral: "6019",
-          rgb: "189-236-182",
-          id: "#BDECB6",
-          name: "Weißgrün",
-          en: "Pastel green",}}
+        // setColorOut={setColorCart}
+        defaultColor={foodColors.cart}
+        onColorSelect={(color) => setFoodColors({...foodColors, cart: color.id})}
       ></MyColorPicker>
       <label htmlFor="colpick2">
         {checked ? langStrings.Farbe2.en : langStrings.Farbe2.de}
@@ -198,12 +208,9 @@ function App() {
         id="colpick2"
         langEn={checked}
         colors={RalColorsLimited}
-        setColorOut={setColorRecent}
-        defaultColor={{ral: "1015",
-          rgb: "230-214-144",
-          id: "#E6D690",
-          name: "Hellelfenbein",
-          en: "Light ivory",}}
+        // setColorOut={setColorRecent}
+        defaultColor={foodColors.recent}
+        onColorSelect={(color) => setFoodColors({...foodColors, recent: color.id})}
       ></MyColorPicker>
       <label htmlFor="colpick3">
         {checked ? langStrings.Farbe3.en : langStrings.Farbe3.de}
@@ -212,12 +219,9 @@ function App() {
         id="colpick3"
         langEn={checked}
         colors={RalColorsLimited}
-        setColorOut={setColorResults}
-        defaultColor={{ral: "7035",
-          rgb: "203-208-204",
-          id: "#CBD0CC",
-          name: "Lichtgrau",
-          en: "Light grey",}}
+        // setColorOut={setColorResults}
+        defaultColor={foodColors.results}
+        onColorSelect={(color) => setFoodColors({...foodColors, results: color.id})}
       ></MyColorPicker>
 
     </MainContainer>
