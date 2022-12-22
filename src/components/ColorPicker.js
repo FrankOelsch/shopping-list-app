@@ -68,6 +68,7 @@ export default function MyColorPicker({colors, onColorSelect, defaultColor, lang
 }
 
 const Container = styled.div`
+  position: relative;
   display: flex;
   flex-direction: column;
   flex-wrap: nowrap;
@@ -78,6 +79,9 @@ const Container = styled.div`
 `;
 
 const ColorList = styled.ul`
+  position: absolute;
+  z-index: 10;
+  bottom: 100%;
   display: flex;
   flex-direction: column;
   flex-wrap: nowrap;
